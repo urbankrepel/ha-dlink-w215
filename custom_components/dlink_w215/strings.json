@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "D-Link DSP-W215",
+        "description": "Enter the plug's IP address and the 6-digit PIN printed on its label.",
+        "data": {"host": "IP address", "password": "PIN", "name": "Name", "username": "Username"}
+      }
+    },
+    "error": {
+      "cannot_connect": "Can't reach the plug. Check the IP address and network.",
+      "invalid_auth": "Wrong PIN."
+    },
+    "abort": {"already_configured": "This plug is already set up."}
+  }
+}

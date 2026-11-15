@@ -8,6 +8,7 @@ from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchEntity
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
 
+from . import DOMAIN
 from .hnap import W215
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,9 +22,17 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 })
 
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
-    dev = W215(config[CONF_HOST], config[CONF_PASSWORD], config[CONF_USERNAME])
-    add_entities([W215Switch(dev, config[CONF_NAME], config[CONF_HOST])], True)
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    """Old YAML config: import it into a UI entry."""
+    hass.async_create_task(hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": "import"},
+        data={k: config[k] for k in (CONF_HOST, CONF_PASSWORD, CONF_USERNAME, CONF_NAME)}))
+
+
+async def async_setup_entry(hass, entry, async_add_entities):
+    d = entry.data
+    dev = W215(d[CONF_HOST], d[CONF_PASSWORD], d.get(CONF_USERNAME, "admin"))
+    async_add_entities([W215Switch(dev, d.get(CONF_NAME, entry.title), d[CONF_HOST])], True)
 
 
 class W215Switch(SwitchEntity):
@@ -34,6 +43,11 @@ class W215Switch(SwitchEntity):
         self._attr_is_on = None
         self._attr_available = False
         self._attr_extra_state_attributes = {}
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, host)},
+            "name": name, "manufacturer": "D-Link", "model": "DSP-W215",
+            "configuration_url": f"http://{host}",
+        }
 
     def turn_on(self, **kwargs):
         self._dev.set_state(True)

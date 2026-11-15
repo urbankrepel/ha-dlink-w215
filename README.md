@@ -13,14 +13,8 @@ Manual install: copy `custom_components/dlink_w215` into `/config/custom_compone
 
 ## Configure
 
-Remove the built-in D-Link integration for the plug first, then add to `configuration.yaml`:
+Remove the built-in D-Link integration for the plug first, then:
 
-```yaml
-switch:
-  - platform: dlink_w215
-    host: 192.168.x.x          # plug IP
-    password: !secret w215_pin # 6-digit PIN from the plug's label
-    name: D-Link Plug
-```
+**Settings → Devices & services → Add integration → "D-Link DSP-W215"**, and enter the plug's IP address and the 6-digit PIN from its label.
 
-Restart Home Assistant. The switch also exposes `current_power_w` and `temperature_c` attributes.
+The switch also exposes `current_power_w` and `temperature_c` attributes. If you used the YAML setup from v1.0.0, it's imported into the UI automatically. After that you can delete the YAML block.
