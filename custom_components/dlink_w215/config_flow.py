@@ -1,4 +1,6 @@
 """UI setup for D-Link DSP-W215."""
+import logging
+
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -6,6 +8,8 @@ from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PASSWORD, CONF_USERNA
 
 from . import DOMAIN
 from .hnap import W215
+
+_LOGGER = logging.getLogger(__name__)
 
 SCHEMA = vol.Schema({
     vol.Required(CONF_HOST): str,
@@ -28,7 +32,8 @@ class W215ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.hass.async_add_executor_job(dev.is_on)
             except PermissionError:
                 errors["base"] = "invalid_auth"
-            except Exception:
+            except Exception as err:
+                _LOGGER.warning("Can't connect to %s: %s", user_input[CONF_HOST], err)
                 errors["base"] = "cannot_connect"
             else:
                 return self.async_create_entry(title=user_input[CONF_NAME], data=user_input)

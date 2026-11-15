@@ -17,4 +17,8 @@ Remove the built-in D-Link integration for the plug first, then:
 
 **Settings → Devices & services → Add integration → "D-Link DSP-W215"**, and enter the plug's IP address and the 6-digit PIN from its label.
 
-The switch also exposes `current_power_w` and `temperature_c` attributes. If you used the YAML setup from v1.0.0, it's imported into the UI automatically. After that you can delete the YAML block.
+You get:
+- **Switch**: on/off
+- **Power** (W): live reading
+- **Energy** (kWh): total that keeps counting up, ready for the **Energy dashboard** (Settings → Dashboards → Energy → add device). The plug stores no total that can be read, so this adds up the power readings every 15 s. It survives restarts, and it doesn't count time when the plug is unreachable.
+- **Temperature**: the plug's internal temperature, disabled by default. If you used the YAML setup from v1.0.0, it's imported into the UI automatically. After that you can delete the YAML block.
